@@ -275,6 +275,11 @@ namespace Comp
         private Dictionary<string, string> variables = new Dictionary<string, string>(); // {ім'я -> бінарне значення}
         private List<string[,]> instructionOperands = new List<string[,]>(); // Список масивів {інструкція, операнд}
         private int instructionCounter = 0; // Лічильник інструкцій
+        private string RemoveComments(string line)
+        {
+            int commentIndex = line.IndexOf(';');
+            return commentIndex >= 0 ? line.Substring(0, commentIndex).Trim() : line.Trim();
+        }
 
         public void ParseCode(string code)
         {
@@ -294,7 +299,7 @@ namespace Comp
 
             foreach (string line in lines)
             {
-                string trimmedLine = line.Trim();
+                string trimmedLine = RemoveComments(line);
 
                 if (string.IsNullOrEmpty(trimmedLine) || trimmedLine.StartsWith(";"))
                     continue; // Пропускаємо коментарі та порожні рядки

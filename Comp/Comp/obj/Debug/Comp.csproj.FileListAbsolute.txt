@@ -22,3 +22,17 @@ C:\Users\User_pc\DIY\C#\Comp\Comp\bin\Debug\FastColoredTextBox.dll
 C:\Users\User_pc\DIY\C#\Comp\Comp\bin\Debug\FastColoredTextBox.xml
 C:\Users\User_pc\DIY\C#\Comp\Comp\obj\Debug\Comp.csproj.Up2Date
 C:\Users\User_pc\DIY\C#\Comp\Comp\bin\Debug\AutocompleteMenu.dll
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\Comp.exe.config
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\Comp.exe
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\Comp.pdb
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\AutocompleteMenu.dll
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\FastColoredTextBox.dll
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\FastColoredTextBox.xml
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.csproj.AssemblyReference.cache
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.Form1.resources
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.Properties.Resources.resources
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.csproj.GenerateResource.cache
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.csproj.CoreCompileInputs.cache
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.csproj.Up2Date
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.exe
+C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\obj\Debug\Comp.pdb
