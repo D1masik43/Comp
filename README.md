@@ -14,7 +14,7 @@ for sourse code open vs solution
 
 ![image](https://github.com/user-attachments/assets/b82f30bb-70e3-4b8c-9576-5beda2474af3)
 example code (lab 4)
-
+```
 bvar A = 0000000000101100        ; Вхідне число
 dvar result = 0  ; Лічильник пар "00"
 dvar mask = 3    ; Маска 0b11 (для перевірки останніх двох біт)
@@ -97,3 +97,4 @@ Lab End :
     STORE result    ; Зберегти результат в кінцеву змінну
     HALT            ; Завершити програму
 
+```
