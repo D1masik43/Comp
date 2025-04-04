@@ -9,6 +9,7 @@ made using C# and win forms
 - variables represent addresses to use
 - instructions are from DeComp
 - Lab - represents next after it instruction to jump
+- Debug window contains all found Labs,instrucions and vaiables(address,name and values) and other usefull info
 
 to run as user : C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\Comp.exe
 
