@@ -1,12 +1,14 @@
 # Comp
+
 assembler for lpnu DeComp
 made using C# and win forms
 
-How to use:
-dvar - decimal variable
-bvar - binary variable
-instructions are from DeComp
-Lab - represents next after it instruction to jump
+## How to use:
+- dvar - decimal variable
+- bvar - binary variable
+- variables represent addresses to use
+- instructions are from DeComp
+- Lab - represents next after it instruction to jump
 
 to run as user : C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\Comp.exe
 
