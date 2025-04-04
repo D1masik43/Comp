@@ -39,7 +39,45 @@ namespace Comp
 
             // Set items for autocomplete
             autocompleteMenu.Items.SetAutocompleteItems(GetAutocompleteItems());
+            this.Resize += Form1_Resize; // Attach Resize event
         }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Maximized)
+            {
+                // When the form is maximized, set bounds to exclude the taskbar
+
+                this.Bounds = Screen.FromControl(this).WorkingArea;
+            }
+            else if (this.WindowState == FormWindowState.Normal)
+            {
+                // When the form is restored to normal, remove the size constraint
+                this.MaximumSize = new Size(int.MaxValue, int.MaxValue);
+            }
+
+            int width = this.ClientSize.Width;
+            int height = this.ClientSize.Height;
+            int paddingUp = (int)(height * 0.03);
+            int paddingLeft = (int)(width * 0.08);
+            int rtbWidth = (int)(width * 0.44);
+            int rtbHeight = (int)(height * 0.70);
+            int rtb3Width = (int)(width * 0.88);
+            int rtb3Top = richTextBox1.Bottom + paddingUp;
+            int rtb3Height = this.ClientSize.Height - rtb3Top - paddingUp; // subtract bottom padding too
+
+            int buttonWidth = (int)(width * 0.06);
+            int buttonHeight = (int)(height * 0.035);
+
+            richTextBox1.SetBounds(12, 12, rtbWidth, rtbHeight);
+            richTextBox2.SetBounds(12 + rtbWidth + paddingLeft, 12, rtbWidth, rtbHeight);
+            richTextBox3.SetBounds(12+paddingLeft, richTextBox1.Bottom + paddingUp, rtb3Width, rtb3Height);
+            button1.SetBounds(14, richTextBox1.Bottom + paddingUp, buttonWidth, buttonHeight);
+        }
+
+
+
+
         private void UpdateAutocomplete()
         {
             // Combine instructions with dynamically found labels and variables
@@ -195,10 +233,11 @@ namespace Comp
             stopwatch.Stop(); // Stop timing
 
             PrintResults();
-            long elapsedNanoseconds = (stopwatch.ElapsedTicks * 1_000_000L) / Stopwatch.Frequency;
+            double elapsedMilliseconds = (double)stopwatch.ElapsedTicks * 1000.0 / Stopwatch.Frequency;
 
             // Print the build time in richTextBox3
-            richTextBox3.AppendText($"\nЧас компіляції: {elapsedNanoseconds} мкрс\n");
+            richTextBox3.AppendText($"\nЧас компіляції: {elapsedMilliseconds:F3} мс\n"); // 3 decimal places
+
         }
 
         private string FormatBinaryOutput(int address, string binaryCode)
@@ -395,7 +434,7 @@ namespace Comp
         {
             string[] instructionSet =
             {
-                "dvar", "svar"
+                "dvar", "bvar"
             };
 
             return instructionSet.Any(inst => line.StartsWith(inst, StringComparison.OrdinalIgnoreCase));
