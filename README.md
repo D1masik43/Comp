@@ -105,3 +105,9 @@ Lab End :
     HALT            ; Завершити програму
 
 ```
+
+**Roadmap**
+- 🟢 Basic compiling --> 
+- 🟢 Better UI and code highlighting --> 
+- 🔴 Saving and loading files inside application and autoloading to DeComp.prg --> 
+- 🔴 Customisation(dark theme, custom colors maps)
