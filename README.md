@@ -10,6 +10,8 @@ Lab - represents next after it instruction to jump
 
 to run as user : C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\Comp.exe
 
+!!! output bin must be placed in DeComp folder in DeComp.prg file and then in decomp you need to press "input from input device" button (main page top right corner)
+
 for sourse code open vs solution
 
 Хто хоче віддячити за прогу і купити булочку в чебуречній ,вот "золота карточка"(ощад) політєха  5167803270211803 (5 грн тоже гроші)
