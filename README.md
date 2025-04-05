@@ -3,6 +3,7 @@
 assembler for lpnu DeComp
 made using C# and win forms
 
+
 ## How to use:
 - dvar - decimal variable
 - bvar - binary variable
@@ -11,11 +12,10 @@ made using C# and win forms
 - Lab - represents next after it instruction to jump
 - Debug window contains all found Labs,instrucions and vaiables(address,name and values) and other usefull info
 
-to run as user : C:\Users\User_pc\DIY\C#\Comp\Comp\Comp\bin\Debug\Comp.exe
-
 !!! output bin must be placed in DeComp folder in DeComp.prg file and then in decomp you need to press "input from input device" button (main page top right corner)
 
-for sourse code open vs solution
+
+
 
 Хто хоче віддячити за прогу і купити булочку в чебуречній ,вот "золота карточка"(ощад) політєха  5167803270211803 (5 грн тоже гроші)
 
