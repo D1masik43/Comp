@@ -1,11 +1,13 @@
 ﻿using FastColoredTextBoxNS;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Comp
 {
@@ -65,14 +67,28 @@ namespace Comp
             int rtb3Width = (int)(width * 0.88);
             int rtb3Top = richTextBox1.Bottom + paddingUp;
             int rtb3Height = this.ClientSize.Height - rtb3Top - paddingUp; // subtract bottom padding too
-
+            int upperPad = 36;
             int buttonWidth = (int)(width * 0.06);
-            int buttonHeight = (int)(height * 0.035);
 
-            richTextBox1.SetBounds(12, 12, rtbWidth, rtbHeight);
-            richTextBox2.SetBounds(12 + rtbWidth + paddingLeft, 12, rtbWidth, rtbHeight);
-            richTextBox3.SetBounds(12+paddingLeft, richTextBox1.Bottom + paddingUp, rtb3Width, rtb3Height);
-            button1.SetBounds(14, richTextBox1.Bottom + paddingUp, buttonWidth, buttonHeight);
+            richTextBox1.SetBounds(12, upperPad, rtbWidth, rtbHeight);
+            richTextBox2.SetBounds(12 + rtbWidth + paddingLeft, upperPad, rtbWidth, rtbHeight);
+            richTextBox3.SetBounds(12 + paddingLeft, richTextBox1.Bottom + paddingUp, rtb3Width, rtb3Height);
+            button1.SetBounds(14, richTextBox1.Bottom + paddingUp, buttonWidth, button1.Height);
+
+            int but2left = (int)(richTextBox2.Left + richTextBox2.Width - button2.Width);
+
+
+            button2.SetBounds(but2left, 7, (int)(width * 0.169), button2.Height);
+            button3.SetBounds(12, 7, (int)(width * 0.085), button3.Height);
+            button4.SetBounds(12 + button3.Width, 7, (int)(width * 0.095), button3.Height);
+            /*                          ==Debug==
+            string info = $"RTB1: Location=({richTextBox1.Left}, {richTextBox1.Top}), Size=({richTextBox1.Width}x{richTextBox1.Height})\n" +
+              $"RTB2: Location=({richTextBox2.Left}, {richTextBox2.Top}), Size=({richTextBox2.Width}x{richTextBox2.Height})\n" +
+              $"RTB3: Location=({richTextBox3.Left}, {richTextBox3.Top}), Size=({richTextBox3.Width}x{richTextBox3.Height})\n";
+
+            richTextBox1.AppendText("\n--- RTB123 Layout Info ---\n" + info);
+            */
+
         }
 
 
@@ -485,6 +501,57 @@ namespace Comp
                 {
                     richTextBox3.AppendText($"{instruction} -> {operand}\n");
                 }
+            }
+        }
+        string currentFilePath = null; // Keep track of the file path
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(currentFilePath))
+            {
+                // Path is already known, save directly
+                File.WriteAllText(currentFilePath, richTextBox2.Text);
+            }
+            else
+            {
+                // Ask the user for the path
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.OverwritePrompt = false;
+                    saveFileDialog.Filter = "Program Files (*.prg)|*.prg|All Files (*.*)|*.*";
+                    saveFileDialog.Title = "Вкажіть шлях до DeComp.prg";
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        currentFilePath = saveFileDialog.FileName;
+                        File.WriteAllText(currentFilePath, richTextBox2.Text);
+                    }
+                }
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Assemly (*.Comp)|*.Comp|All Files (*.*)|*.*";
+            saveDialog.Title = "Зберегти як";
+            saveDialog.DefaultExt = "Comp";
+            saveDialog.AddExtension = true;
+
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(saveDialog.FileName, richTextBox1.Text);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog();
+            openDialog.Filter = "Assemly (*.Comp)|*.Comp|All Files (*.*)|*.*";
+            openDialog.Title = "Відкрити";
+
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                richTextBox1.Text = File.ReadAllText(openDialog.FileName);
             }
         }
     }
