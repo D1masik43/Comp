@@ -10,8 +10,9 @@
 
 ![image](https://github.com/user-attachments/assets/f0d30979-bfcd-4055-895d-ef486a31c2a7)
 
-Код для прикладу (Лаба 3)
-                 dvar NUM =  14  ; Вхідне число
+# Код для прикладу (Лаба 3)
+```
+dvar NUM =  14  ; Вхідне число
 dvar RESULT = 0     ; Лічильник нулів
 dvar ONE = 1        ; Константа 1
 dvar BIT_COUNT = 16 ; Лічильник ітерацій що залишились
@@ -39,4 +40,4 @@ STORE NUM
 JMP MAIN
 
 Lab END :
-
+```
