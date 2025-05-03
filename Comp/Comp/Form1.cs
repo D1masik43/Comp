@@ -119,13 +119,13 @@ namespace Comp
             List<string> foundItems = new List<string>();
             string text = richTextBox1.Text;
 
-       
+
 
             // Find labels
             foreach (Match match in labelRegex.Matches(text))
             {
                 if (!foundItems.Contains(match.Groups[1].Value))
-                    foundItems.Add(match.Groups[1].Value); 
+                    foundItems.Add(match.Groups[1].Value);
             }
 
             // Find variables
@@ -338,7 +338,7 @@ namespace Comp
 
         public void ParseCode(string code)
         {
-          
+
             labels.Clear();
             instructions.Clear();
             variables.Clear();
@@ -347,7 +347,7 @@ namespace Comp
 
             string[] lines = code.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-           
+
 
             bool insideLabel = false;
             string currentLabel = "";
@@ -374,7 +374,7 @@ namespace Comp
                 {
                     string varName = dvarMatch.Groups[1].Value;
                     int value = int.Parse(dvarMatch.Groups[2].Value);
-                    string binaryValue = Convert.ToString(value, 2).PadLeft(12, '0'); // 12-бітне представлення
+                    string binaryValue = Convert.ToString(value, 2).PadLeft(16, '0'); // 12-бітне представлення
                     variables[varName] = binaryValue;
                     continue;
                 }
@@ -387,7 +387,7 @@ namespace Comp
                     int value = int.Parse(sdvarMatch.Groups[2].Value);
 
                     // Перетворення у 12-бітне двійкове представлення (two’s complement)
-                    string binaryValue = Convert.ToString(value & 0xFFF, 2).PadLeft(12, '0');
+                    string binaryValue = Convert.ToString(value & 0xFFF, 2).PadLeft(16, '0');
 
                     variables[varName] = binaryValue;
                     continue;
@@ -400,7 +400,7 @@ namespace Comp
                 {
                     string varName = bvarMatch.Groups[1].Value;
                     string binaryString = bvarMatch.Groups[2].Value;
-                    string binaryValue = binaryString.PadLeft(12, '0'); // 12-бітне представлення
+                    string binaryValue = binaryString.PadLeft(16, '0'); // 12-бітне представлення
                     variables[varName] = binaryValue;
                     continue;
                 }
@@ -432,7 +432,7 @@ namespace Comp
 
 
             }
-    
+
         }
 
         private bool IsInstruction(string line)
@@ -483,7 +483,7 @@ namespace Comp
             int index = 0;
             foreach (var variable in variables)
             {
-                richTextBox3.AppendText($" {Convert.ToString((index + 1 + instructions.Count) & 0xFFF, 2).PadLeft(12, '0')} : {variable.Key} -> {variable.Value}\n");
+                richTextBox3.AppendText($" {Convert.ToString((index + 1 + instructions.Count) & 0xFFF, 2).PadLeft(16, '0')} : {variable.Key} -> {variable.Value}\n");
                 index++;
             }
 
