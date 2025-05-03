@@ -18,8 +18,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -28,7 +32,7 @@
               "RelativeDocumentMoniker": "Comp\\Form1.cs",
               "ToolTip": "C:\\Users\\User_pc\\DIY\\C#\\Comp\\Comp\\Comp\\Form1.cs*",
               "RelativeToolTip": "Comp\\Form1.cs*",
-              "ViewState": "AgIAAI8BAAAAAAAAAAAAAJIBAABAAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwCkAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-01T19:23:49.033Z",
               "EditorCaption": ""
@@ -39,10 +43,11 @@
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\User_pc\\DIY\\C#\\Comp\\Comp\\Comp\\Form1.cs",
               "RelativeDocumentMoniker": "Comp\\Form1.cs",
-              "ToolTip": "C:\\Users\\User_pc\\DIY\\C#\\Comp\\Comp\\Comp\\Form1.cs [Design]",
-              "RelativeToolTip": "Comp\\Form1.cs [Design]",
+              "ToolTip": "C:\\Users\\User_pc\\DIY\\C#\\Comp\\Comp\\Comp\\Form1.cs [Design]*",
+              "RelativeToolTip": "Comp\\Form1.cs [Design]*",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-01T19:23:43.798Z"
+              "WhenOpened": "2025-04-01T19:23:43.798Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }

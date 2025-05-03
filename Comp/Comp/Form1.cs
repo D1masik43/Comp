@@ -14,6 +14,7 @@ namespace Comp
     public partial class Form1 : Form
     {
         private AutocompleteMenu autocompleteMenu;
+  
 
         // Define text styles
         TextStyle commentStyle = new TextStyle(Brushes.Green, null, FontStyle.Italic);
@@ -21,6 +22,8 @@ namespace Comp
         TextStyle instructionStyle = new TextStyle(Brushes.Black, null, FontStyle.Bold);
         TextStyle jmpArgumentStyle = new TextStyle(Brushes.Blue, null, FontStyle.Bold);
         TextStyle normalArgumentStyle = new TextStyle(Brushes.Purple, null, FontStyle.Bold);
+        TextStyle errorStyle = new TextStyle(null, Brushes.Red, FontStyle.Regular);
+
 
         Regex labelRegex = new Regex(@"Lab\s+(\w+)\s*:"); // Початок Lab
         Regex varRegex = new Regex(@"dvar\s+(\w+)\s*=\s*(-?\d+)");  // dvar name = -123
@@ -36,6 +39,7 @@ namespace Comp
             richTextBox1.TextChanged += fastColoredTextBox1_TextChanged;
             // Initialize Autocomplete Menu
             autocompleteMenu = new AutocompleteMenu(richTextBox1);
+            autocompleteMenu.AllowTabKey = true;
             autocompleteMenu.MinFragmentLength = 1; // Show suggestions after 1 character
             richTextBox1.TextChanged += (s, e) => UpdateAutocomplete();
 
@@ -196,44 +200,84 @@ namespace Comp
             ParseCode(richTextBox1.Text);
             GenerateBinaryCode();
         }
+
+
         private void GenerateBinaryCode()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew(); // Start timing
-            richTextBox2.Text = ""; // Очистити перед виводом
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            richTextBox2.Text = "";
+            richTextBox3.Text = ""; // Clear previous logs
             int addressCounter = 0;
+            bool hasErrors = false;
 
-            // Спочатку записуємо інструкції
+
             foreach (var instructionArray in instructionOperands)
             {
-                string instruction = instructionArray[0, 0]; // Інструкція
-                string operand = instructionArray[0, 1];     // Операнд
+                string instruction = instructionArray[0, 0];
+                string operand = instructionArray[0, 1];
+                int lineNumber = int.Parse(instructionArray[0, 2]); // Line number from instructionOperands
 
                 string binaryCode = "";
+
                 if (JmpInstructions.Contains(instruction))
                 {
-                    int address = labels.ContainsKey("Lab" + operand) ? labels["Lab" + operand] : 0;
-                    binaryCode = GetBinaryCodeForInstruction(instruction) + Convert.ToString(address, 2).PadLeft(12, '0');
+                    string labelKey = "Lab" + operand;
+                    if (labels.ContainsKey(labelKey))
+                    {
+                        int address = labels[labelKey];
+                        binaryCode = GetBinaryCodeForInstruction(instruction) + Convert.ToString(address, 2).PadLeft(12, '0');
+                    }
+                    else
+                    {
+                        richTextBox3.AppendText($"[Error] Label '{operand}' not found.\n");
+                        hasErrors = true;
+
+                        // Highlight the error line in red
+                        HighlightErrorLine(lineNumber);
+                        continue; // Skip this instruction
+                    }
                 }
                 else if (!string.IsNullOrEmpty(operand))
                 {
-                    int operandValue = variables.Keys.ToList().IndexOf(operand) + instructions.Count + 1;
-                    binaryCode = GetBinaryCodeForInstruction(instruction) + Convert.ToString(operandValue, 2).PadLeft(12, '0');
+                    if (variables.ContainsKey(operand))
+                    {
+                        int operandValue = variables.Keys.ToList().IndexOf(operand) + instructions.Count + 1;
+                        binaryCode = GetBinaryCodeForInstruction(instruction) + Convert.ToString(operandValue, 2).PadLeft(12, '0');
+                    }
+                    else
+                    {
+                        richTextBox3.AppendText($"[Error] Variable '{operand}' not declared.\n");
+                        hasErrors = true;
+
+                        // Highlight the error line in red
+                        HighlightErrorLine(lineNumber);
+                        continue; // Skip this instruction
+                    }
                 }
                 else if (instructionsWithoutOperands.Contains(instruction))
                 {
-                    binaryCode = GetBinaryCodeForInstruction(instruction) + "000000000000"; // Без операнда
+                    binaryCode = GetBinaryCodeForInstruction(instruction) + "000000000000";
                 }
+                else
+                {
+                    richTextBox3.AppendText($"[Error] Instruction '{instruction}' missing a valid operand.\n");
+                    hasErrors = true;
 
+                    // Highlight the error line in red
+                    HighlightErrorLine(lineNumber);
+                    continue; // Skip this instruction
+                }
+                
                 string formattedOutput = FormatBinaryOutput(addressCounter, binaryCode);
                 richTextBox2.AppendText(formattedOutput + "\n");
                 addressCounter++;
             }
 
-            // Додаємо код для HALT
+            // Add HALT
             richTextBox2.AppendText(FormatBinaryOutput(addressCounter, "0111110000000000") + "\n");
             addressCounter++;
 
-            // Потім записуємо змінні
+            // Add variables
             foreach (var variable in variables)
             {
                 string formattedOutput = FormatBinaryOutput(addressCounter, variable.Value.PadLeft(16, '0'));
@@ -241,19 +285,36 @@ namespace Comp
                 addressCounter++;
             }
 
-            // Видаляємо останній символ (перенос рядка)
+            // Trim final newline
             if (richTextBox2.Text.Length > 0)
-            {
                 richTextBox2.Text = richTextBox2.Text.TrimEnd('\n');
-            }
-            stopwatch.Stop(); // Stop timing
 
+            stopwatch.Stop();
             PrintResults();
+
             double elapsedMilliseconds = (double)stopwatch.ElapsedTicks * 1000.0 / Stopwatch.Frequency;
+            richTextBox3.AppendText($"\nЧас компіляції: {elapsedMilliseconds:F3} мс\n");
 
-            // Print the build time in richTextBox3
-            richTextBox3.AppendText($"\nЧас компіляції: {elapsedMilliseconds:F3} мс\n"); // 3 decimal places
+            if (hasErrors)
+            {
+                richTextBox3.AppendText("⚠️ Увага: Деякі інструкції не згенеровані через помилки.\n");
+            }
+        }
 
+        // Method to highlight error lines in richTextBox1 with red background
+        private void HighlightErrorLine(int lineNumber)
+        {
+            // Define a style for errors
+            
+
+            // Check if the line exists in FCTB
+            if (lineNumber > 0 && lineNumber <= richTextBox1.LinesCount)
+            {
+                var lineRange = richTextBox1.GetLine(lineNumber - 1); // FCTB is 0-based, so we subtract 1
+                lineRange.ClearStyle(StyleIndex.All);
+                lineRange.SetStyle(errorStyle); // Apply the error style
+                
+            }
         }
 
         private string FormatBinaryOutput(int address, string binaryCode)
@@ -338,101 +399,93 @@ namespace Comp
 
         public void ParseCode(string code)
         {
-
             labels.Clear();
             instructions.Clear();
             variables.Clear();
             instructionOperands.Clear();
             instructionCounter = 0;
 
-            string[] lines = code.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
+            string[] lines = code.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
 
             bool insideLabel = false;
             string currentLabel = "";
 
-            foreach (string line in lines)
+            for (int lineNumber = 0; lineNumber < lines.Length; lineNumber++) // Use lineNumber to get the line number
             {
+                string line = lines[lineNumber];
                 string trimmedLine = RemoveComments(line);
 
                 if (string.IsNullOrEmpty(trimmedLine) || trimmedLine.StartsWith(";"))
-                    continue; // Пропускаємо коментарі та порожні рядки
+                    continue; // Skip comments and empty lines
 
-                // Перевірка на Lab
+                // Check for Label
                 Match labelMatch = labelRegex.Match(trimmedLine);
                 if (labelMatch.Success)
                 {
                     string labelName = "Lab" + labelMatch.Groups[1].Value;
-                    labels[labelName] = instructionCounter; // Запам'ятовуємо адресу Lab
+                    labels[labelName] = instructionCounter; // Store the address of the label
                     continue;
                 }
 
-                // Перевірка на змінну dvar
+                // Check for variable dvar
                 Match dvarMatch = dvarRegex.Match(trimmedLine);
                 if (dvarMatch.Success)
                 {
                     string varName = dvarMatch.Groups[1].Value;
                     int value = int.Parse(dvarMatch.Groups[2].Value);
-                    string binaryValue = Convert.ToString(value, 2).PadLeft(16, '0'); // 12-бітне представлення
+                    string binaryValue = Convert.ToString(value, 2).PadLeft(16, '0'); // 12-bit representation
                     variables[varName] = binaryValue;
                     continue;
                 }
 
-                // Перевірка на змінну sdvar
+                // Check for variable sdvar
                 Match sdvarMatch = sdvarRegex.Match(trimmedLine);
                 if (sdvarMatch.Success)
                 {
                     string varName = sdvarMatch.Groups[1].Value;
                     int value = int.Parse(sdvarMatch.Groups[2].Value);
 
-                    // Перетворення у 12-бітне двійкове представлення (two’s complement)
-                    string binaryValue = Convert.ToString(value & 0xFFF, 2).PadLeft(16, '0');
+                    // Convert to 12-bit two's complement representation
+                    string binaryValue = Convert.ToString(value & 0xFFFF, 2).PadLeft(16, '0');
 
                     variables[varName] = binaryValue;
                     continue;
                 }
 
-
-                // Перевірка на змінну bvar
+                // Check for variable bvar
                 Match bvarMatch = bvarRegex.Match(trimmedLine);
                 if (bvarMatch.Success)
                 {
                     string varName = bvarMatch.Groups[1].Value;
                     string binaryString = bvarMatch.Groups[2].Value;
-                    string binaryValue = binaryString.PadLeft(16, '0'); // 12-бітне представлення
+                    string binaryValue = binaryString.PadLeft(16, '0'); // 12-bit representation
                     variables[varName] = binaryValue;
                     continue;
                 }
 
-                // Якщо це інструкція
+                // If it's an instruction
                 if (IsInstruction(trimmedLine))
                 {
                     Match instructionMatch = instructionRegex.Match(trimmedLine);
                     string instruction = instructionMatch.Groups[1].Value;
-                    string operand = instructionMatch.Groups[2]?.Value;  // Забезпечуємо безпеку, якщо операнда немає
+                    string operand = instructionMatch.Groups[2]?.Value;  // Ensure safety if there's no operand
 
-                    // Якщо інструкція без операнда
+                    // If the instruction has no operand
                     if (instructionsWithoutOperands.Contains(trimmedLine))
                     {
-                        instructionOperands.Add(new string[,] { { trimmedLine, null } });
+                        instructionOperands.Add(new string[,] { { trimmedLine, null, (lineNumber + 1).ToString() } });
                     }
                     else
                     {
-                        // Якщо інструкція має операнд, додаємо операнд
-                        instructionOperands.Add(new string[,] { { instruction, operand } });
+                        // If the instruction has an operand, add the operand
+                        instructionOperands.Add(new string[,] { { instruction, operand, (lineNumber + 1).ToString() } });
                     }
 
                     instructions.Add(instruction);
                     instructionCounter++;
                 }
-
-
-
-
-
             }
-
         }
 
         private bool IsInstruction(string line)
