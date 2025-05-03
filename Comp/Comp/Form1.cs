@@ -213,6 +213,7 @@ namespace Comp
 
             foreach (var instructionArray in instructionOperands)
             {
+                if (hasErrors) richTextBox2.Text = "";
                 string instruction = instructionArray[0, 0];
                 string operand = instructionArray[0, 1];
                 int lineNumber = int.Parse(instructionArray[0, 2]); // Line number from instructionOperands
@@ -284,7 +285,7 @@ namespace Comp
                 richTextBox2.AppendText(formattedOutput + "\n");
                 addressCounter++;
             }
-
+            if (hasErrors) richTextBox2.Text = "";
             // Trim final newline
             if (richTextBox2.Text.Length > 0)
                 richTextBox2.Text = richTextBox2.Text.TrimEnd('\n');
