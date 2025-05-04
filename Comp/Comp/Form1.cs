@@ -200,6 +200,44 @@ namespace Comp
             ParseCode(richTextBox1.Text);
             GenerateBinaryCode();
         }
+        private void ReHighlightAllLines()
+        {
+            var range = richTextBox1.Range;
+
+            range.ClearStyle(StyleIndex.All);
+
+            // Highlight comments
+            range.SetStyle(commentStyle, @";.*");
+
+            // Highlight labels
+            range.SetStyle(labelStyle, @"\b\w+\s*:");
+
+            // Highlight instructions
+            string instructionPattern = @"\b(LOAD|STORE|ADD|SUB|AND|OR|XOR|NOT|INPUT|OUTPUT|HALT|JNZ|JZ|JP|JM|JNC|JC|JMP|LSL|LSR|ASL|ASR|ROL|ROR|RCL|RCR)\b";
+            range.SetStyle(instructionStyle, instructionPattern, RegexOptions.IgnoreCase);
+
+            // Highlight arguments for instructions
+            for (int i = 0; i < richTextBox1.LinesCount; i++)
+            {
+                var line = richTextBox1.Lines[i].Trim();
+                var words = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                if (words.Length > 1)
+                {
+                    string instruction = words[0].ToUpper();
+                    string argument = words[1];
+                    var lineRange = richTextBox1.GetLine(i);
+
+                    if (JmpInstructions.Contains(instruction))
+                    {
+                        lineRange.SetStyle(jmpArgumentStyle, $@"\b{Regex.Escape(argument)}\b");
+                    }
+                    else if (IsInstruction(instruction) || IsVariable(instruction))
+                    {
+                        lineRange.SetStyle(normalArgumentStyle, $@"\b{Regex.Escape(argument)}\b");
+                    }
+                }
+            }
+        }
 
 
         private void GenerateBinaryCode()
@@ -299,6 +337,11 @@ namespace Comp
             if (hasErrors)
             {
                 richTextBox3.AppendText("⚠️ Увага: Деякі інструкції не згенеровані через помилки.\n");
+            }
+            else
+            {
+                richTextBox1.Range.ClearStyle(errorStyle);
+                ReHighlightAllLines();
             }
         }
 
